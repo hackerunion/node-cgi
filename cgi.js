@@ -103,6 +103,10 @@ function cgi(cgiBin, options) {
     // Now we can spawn the CGI executable
     debug('env: %o', env);
     opts.env = env;
+    
+    if (options.preSpawn) {
+      extend(opts, options.preSpawn(req, opts));
+    }
 
     var cgiSpawn = spawn(cgiBin, opts.args, opts);
     debug('cgi spawn (pid: %o)', cgiSpawn.pid);
@@ -164,6 +168,8 @@ function cgi(cgiBin, options) {
 
 // The default config options to use for each `cgi()` call.
 cgi.DEFAULTS = {
+  // A hook to allow customization of spawn options on a per-request basis
+  preSpawn: null,
   // The 'cgi' handler will take effect when the req.url begins with "mountPoint"
   mountPoint: '/',
   // Any additional variables to insert into the CGI script's Environment
