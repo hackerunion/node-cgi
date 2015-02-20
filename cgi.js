@@ -109,6 +109,8 @@ function cgi(cgiBin, options) {
     }
 
     var cgiSpawn = spawn(cgiBin, opts.args, opts);
+    cgiSpawn.on('error', function(err) { return next(err); });
+
     debug('cgi spawn (pid: %o)', cgiSpawn.pid);
 
     // The request body is piped to 'stdin' of the CGI spawn
